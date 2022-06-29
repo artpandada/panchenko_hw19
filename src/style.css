@@ -1,0 +1,185 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Roboto', sans-serif;
+    color: white;
+}
+body {
+    background-color: black;
+}
+
+.wrapper-center {
+    width: 100%;
+    margin: 0 auto;
+    padding: 0 30px;
+}
+
+.header {
+    padding: 20px 0;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    border-bottom:  1px solid #FFA500;
+
+}
+
+.btn-add {
+    background: #FFA500;
+    border-radius: 20%;
+    border: none;
+    width: 50px;
+    height: 40px;
+    margin: 20px 0;
+
+}
+
+.add-task-form {
+    display: none;
+    flex-direction: column;
+    align-items: flex-end;
+    width: 500px;
+
+}
+
+.new-task {
+    padding: 10px;
+    width: 100%;
+    margin-bottom: 10px;
+    border: 1px solid #FFA500;
+    color: grey;
+}
+
+.btn-add-task, .close-form{
+    background: #FFA500;
+    border-radius: 20%;
+    border: none;
+    width: 50px;
+    height: 25px;
+    padding: 5px;
+
+}
+.error-message {
+    display: none;
+    align-content: flex-start;
+    margin-top: 10px;
+    margin-right: 10px;
+    font-size: 15px;
+    color: red;
+}
+.error .error-message {
+    display: inline-block;
+}
+
+.error input, .error textarea {
+    border: 1px solid red;
+}
+
+.open-form {
+    display: flex;
+}
+
+
+
+
+.main {
+    padding: 20px 0;
+}
+.completed {
+    color: #FFA500;
+}
+
+h1 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+.count-tasks{
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+.tasks-list li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border:1px solid #FFA500;
+    border-radius: 5px;
+    padding: 10px;
+    background-color: #ffffff;
+
+}
+.status {
+    margin: 0  20px 0 10px;
+}
+.tasks-list li h2, .tasks-list li p {
+    color: #FF8C00;
+    max-width: 400px;
+    margin-right: 20px;
+}
+
+.wrapper-btn {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin-right: 20px;
+}
+.wrapper-btn button {
+    margin: 10px;
+    background: #FFA500;
+    border-radius: 5px;
+    border: none;
+    width: 60px;
+    height: 30px;
+    padding: 5px;
+}
+.tasks-list li:not(:last-child){
+    margin-bottom: 20px;
+}
+
+ul .tasks-list-ready {
+    background-color: #FFA500;
+    border:1px solid #ffffff;
+
+}
+
+ li.tasks-list-ready  h2, li.tasks-list-ready  p {
+    color: #ffffff;
+}
+ .tasks-list-ready .wrapper-btn button {
+     background: #ffffff;
+     color: #FFA500;
+ }
+.tasks-list-ready .btn-edit-form {
+    background: #ffffff;
+    color: #FFA500;
+}
+
+
+.edit-form {
+    min-width: 300px;
+    display: none;
+    flex-direction: column;
+
+}
+
+.edit-name, .edit-text{
+    margin-bottom: 10px ;
+    padding: 10px 0 10px 20px;
+    border: 1px solid #FFA500;
+    border-radius: 5px;
+    color: #FF4500;
+
+}
+.btn-edit-form {
+    align-self: center;
+    background: #FFA500;
+    border-radius: 5px;
+    border: none;
+    width: 50px;
+    height: 25px;
+    padding: 5px;
+}
+
+.edit .edit-form {
+    display: flex;
+}

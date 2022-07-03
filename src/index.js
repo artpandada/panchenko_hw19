@@ -1,50 +1,58 @@
 'use strict';
 
-function TaskListModel() {
-    this.list = [];
+
+
+class TaskListModel {
+    list = [];
+
+    add(name, text, status) {
+        const task = {
+            name,
+            text,
+            status,
+        };
+        this.list.push(task);
+    }
+
+    #getTaskIndex(task) {
+        return this.list.findIndex(elem => elem.name === task.name);
+    }
+
+    checkTaskExists(task) {
+        const errorIndex = -1;
+        return this.#getTaskIndex(task) !== errorIndex;
+    }
+
+    changeStatus(id) {
+        this.list[id].status = !this.list[id].status;
+    }
+
+    remove(id) {
+        this.list = this.list.filter(({ name }) => name !== id);
+    }
+
+    getSummary() {
+        return {
+            total: this.list.length,
+            completed: this.list.filter(({ status }) => status === true).length,
+        };
+    }
 }
 
+class TaskListView {
+    constructor(model) {
+        this.model = model;
+        this.startListen();
+    }
 
-TaskListModel.prototype.add = function(name, text, status) {
-    const task = {
-        name,
-        text,
-        status,
-    };
-    this.list.push(task);
+    form = document.querySelector('.add-task-form');
+    btnAdd = document.querySelector('.btn-add');
+    btnClose = document.querySelector('.close-form');
+    taskList = document.querySelector('.tasks-list');
+    total = document.querySelector('.total');
+    completed = document.querySelector('.completed');
 
-};
-TaskListModel.prototype.getTaskIndex = function(task) {
-    return this.list.findIndex(elem => elem.name === task.name);
-};
-TaskListModel.prototype.checkTaskExists = function(task) {
-    const errorIndex = -1;
-    return this.getTaskIndex(task) !== errorIndex;
-};
-TaskListModel.prototype.changeStatus = function(id) {
-    this.list[id].status = !this.list[id].status;
-};
-TaskListModel.prototype.remove = function(id) {
-    this.list = this.list.filter(({ name }) => name !== id);
-};
-TaskListModel.prototype.getSummary = function() {
-    return {
-        total: this.list.length,
-        completed: this.list.filter(({ status }) => status === true).length,
-    };
-};
-
-function TaskListView(model) {
-
-    this.model = model;
-    this.form = document.querySelector('.add-task-form');
-    this.btnAdd = document.querySelector('.btn-add');
-    this.btnClose = document.querySelector('.close-form');
-    this.taskList = document.querySelector('.tasks-list');
-    this.total = document.querySelector('.total');
-    this.completed = document.querySelector('.completed');
-
-    this.initSubmit = function() {
+    initSubmit() {
         this.form.addEventListener('submit', e => {
             e.preventDefault();
 
@@ -61,10 +69,9 @@ function TaskListView(model) {
                 this.form.classList.add('error');
             }
         });
-    };
-    this.initSubmit();
+    }
 
-    this.createList = function() {
+    createList() {
         this.taskList.innerHTML = '';
         this.total.innerHTML = `All : ${this.model.getSummary().total}`;
 
@@ -124,25 +131,24 @@ function TaskListView(model) {
         }
         this.taskList.append(fragment);
 
+    }
 
-    };
-
-    this.openForm = function() {
+    openForm() {
         this.btnAdd.addEventListener('click', () => {
             this.form.classList.add('open-form');
         });
-    };
-    this.openForm();
+    }
 
-    this.closeForm = function() {
+
+    closeForm() {
         this.btnClose.addEventListener('click', () => {
             this.form.classList.remove('open-form');
             this.form.classList.remove('error');
         });
-    };
-    this.closeForm();
+    }
 
-    this.listListener = function() {
+
+    listListener() {
         this.taskList.addEventListener('click', (e) => {
             const element = this.findId(e.target);
 
@@ -160,10 +166,10 @@ function TaskListView(model) {
         });
 
 
-    };
-    this.listListener();
+    }
 
-    this.findId = function(target) {
+
+    findId(target) {
         if (target.dataset.id) {
             const id = this.model.list.findIndex(element => element.name === target.dataset.id);
             const parent = target;
@@ -174,9 +180,9 @@ function TaskListView(model) {
         } else {
             return this.findId(target.parentElement);
         }
-    };
+    }
 
-    this.changeStatus = function(id, element) {
+    changeStatus(id, element) {
         this.model.changeStatus(id);
 
         if (this.model.list[id].status === true) {
@@ -186,9 +192,9 @@ function TaskListView(model) {
         }
         this.completed.innerHTML = `Ready : ${this.model.getSummary().completed}`;
 
-    };
+    }
 
-    this.openEditForm = function(element, i) {
+    openEditForm (element, i) {
         element.classList.add('edit');
 
         const nameEdit = element.querySelector('.edit-name');
@@ -203,11 +209,21 @@ function TaskListView(model) {
             this.model.list[i].text = textEdit.value;
             this.createList();
         });
-    };
+    }
+
+    startListen() {
+        this.initSubmit();
+        this.openForm();
+        this.closeForm();
+        this.listListener();
+    }
 
 
 }
 
 new TaskListView(new TaskListModel);
+
+
+
 
 

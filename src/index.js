@@ -185,7 +185,7 @@ class TaskListView {
     changeStatus(id, element) {
         this.model.changeStatus(id);
 
-        if (this.model.list[id].status === true) {
+        if (this.model.list[id].status ) {
             element.classList.add('tasks-list-ready');
         } else {
             element.classList.remove('tasks-list-ready');

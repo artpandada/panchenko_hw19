@@ -34,7 +34,7 @@ class TaskListModel {
     getSummary() {
         return {
             total: this.list.length,
-            completed: this.list.filter(({ status }) => status === true).length,
+            completed: this.list.filter(({ status }) => status ).length,
         };
     }
 }
@@ -123,7 +123,7 @@ class TaskListView {
             listItem.append(div, nameTask, textTask, wrapperBtn, editForm);
             fragment.prepend(listItem);
 
-            if (task.status === true) {
+            if (task.status ) {
                 listItem.classList.add('tasks-list-ready');
                 checkbox.defaultChecked = true;
             }

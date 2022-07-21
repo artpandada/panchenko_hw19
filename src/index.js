@@ -1,9 +1,9 @@
 'use strict';
 
 
-
 class TaskListModel {
     list = [];
+    storage = localStorage;
 
     add(name, text, status) {
         const task = {
@@ -12,6 +12,24 @@ class TaskListModel {
             status,
         };
         this.list.push(task);
+        this.addToStorage(task);
+    }
+
+    getListStorage() {
+        for (let i = 0; i < this.storage.length; i++) {
+            const key = this.storage.key(i);
+            const value = JSON.parse(this.storage[key]);
+            this.list.push(value);
+        }
+    }
+
+    addToStorage(task) {
+        const taskToJson = JSON.stringify(task);
+        this.storage.setItem(task.name, taskToJson);
+    }
+
+    removeStorage(key) {
+        this.storage.removeItem(key);
     }
 
     #getTaskIndex(task) {
@@ -25,16 +43,18 @@ class TaskListModel {
 
     changeStatus(id) {
         this.list[id].status = !this.list[id].status;
+        this.addToStorage(this.list[id]);
     }
 
     remove(id) {
         this.list = this.list.filter(({ name }) => name !== id);
+        this.removeStorage(id);
     }
 
     getSummary() {
         return {
             total: this.list.length,
-            completed: this.list.filter(({ status }) => status ).length,
+            completed: this.list.filter(({ status }) => status).length,
         };
     }
 }
@@ -43,6 +63,10 @@ class TaskListView {
     constructor(model) {
         this.model = model;
         this.startListen();
+        if (this.model.storage.length > this.model.list.length) {
+            this.model.getListStorage();
+            this.createList();
+        }
     }
 
     form = document.querySelector('.add-task-form');
@@ -123,7 +147,7 @@ class TaskListView {
             listItem.append(div, nameTask, textTask, wrapperBtn, editForm);
             fragment.prepend(listItem);
 
-            if (task.status ) {
+            if (task.status) {
                 listItem.classList.add('tasks-list-ready');
                 checkbox.defaultChecked = true;
             }
@@ -154,12 +178,14 @@ class TaskListView {
 
             if (e.target.classList.contains('status')) {
                 this.changeStatus(element.id, element.parent);
+
             }
             if (e.target.classList.contains('btn-edit')) {
                 this.openEditForm(element.parent, element.id);
             }
             if (e.target.classList.contains('btn-remove')) {
                 this.model.remove(element.parent.dataset.id);
+
                 this.createList();
                 this.completed.innerHTML = `Ready : ${this.model.getSummary().completed}`;
             }
@@ -185,7 +211,7 @@ class TaskListView {
     changeStatus(id, element) {
         this.model.changeStatus(id);
 
-        if (this.model.list[id].status ) {
+        if (this.model.list[id].status) {
             element.classList.add('tasks-list-ready');
         } else {
             element.classList.remove('tasks-list-ready');
@@ -194,7 +220,7 @@ class TaskListView {
 
     }
 
-    openEditForm (element, i) {
+    openEditForm(element, i) {
         element.classList.add('edit');
 
         const nameEdit = element.querySelector('.edit-name');
@@ -205,9 +231,13 @@ class TaskListView {
 
         element.addEventListener('submit', (e) => {
             e.preventDefault();
+            if (this.model.list[i].name !== nameEdit.value) {
+                this.model.removeStorage(this.model.list[i].name);
+            }
             this.model.list[i].name = nameEdit.value;
             this.model.list[i].text = textEdit.value;
             this.createList();
+            this.model.addToStorage(this.model.list[i]);
         });
     }
 

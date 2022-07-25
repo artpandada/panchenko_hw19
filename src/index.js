@@ -12,24 +12,17 @@ class TaskListModel {
             status,
         };
         this.list.push(task);
-        this.addToStorage(task);
+        this.addToStorage();
     }
 
     getListStorage() {
-        for (let i = 0; i < this.storage.length; i++) {
-            const key = this.storage.key(i);
-            const value = JSON.parse(this.storage[key]);
-            this.list.push(value);
-        }
+        const listToJson = JSON.parse(this.storage['list']);
+        listToJson.forEach(item => this.list.push(item));
     }
 
-    addToStorage(task) {
-        const taskToJson = JSON.stringify(task);
-        this.storage.setItem(task.name, taskToJson);
-    }
-
-    removeStorage(key) {
-        this.storage.removeItem(key);
+    addToStorage() {
+        const taskToJson = JSON.stringify(this.list);
+        this.storage.setItem('list', taskToJson);
     }
 
     #getTaskIndex(task) {
@@ -43,12 +36,12 @@ class TaskListModel {
 
     changeStatus(id) {
         this.list[id].status = !this.list[id].status;
-        this.addToStorage(this.list[id]);
+        this.addToStorage();
     }
 
     remove(id) {
         this.list = this.list.filter(({ name }) => name !== id);
-        this.removeStorage(id);
+        this.addToStorage();
     }
 
     getSummary() {
@@ -63,10 +56,12 @@ class TaskListView {
     constructor(model) {
         this.model = model;
         this.startListen();
-        if (this.model.storage.length > this.model.list.length) {
+        const minLengthStorageItem = 0;
+        if (this.model.storage.getItem('list').length > minLengthStorageItem ) {
             this.model.getListStorage();
             this.createList();
         }
+
     }
 
     form = document.querySelector('.add-task-form');
@@ -96,6 +91,7 @@ class TaskListView {
     }
 
     createList() {
+
         this.taskList.innerHTML = '';
         this.total.innerHTML = `All : ${this.model.getSummary().total}`;
 
@@ -231,13 +227,10 @@ class TaskListView {
 
         element.addEventListener('submit', (e) => {
             e.preventDefault();
-            if (this.model.list[i].name !== nameEdit.value) {
-                this.model.removeStorage(this.model.list[i].name);
-            }
             this.model.list[i].name = nameEdit.value;
             this.model.list[i].text = textEdit.value;
             this.createList();
-            this.model.addToStorage(this.model.list[i]);
+            this.model.addToStorage();
         });
     }
 
